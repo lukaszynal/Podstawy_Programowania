@@ -54,7 +54,7 @@ int main(void) {
 	try {
 		cout << "Wynik: " << a << " / " << b << " = " << division(a, b);
 	}
-	// Jeśli, któryś z warunków nie został spełniony to zostanie wyświetlony na ekranie.
+	// Jeśli, któryś z warunków nie został spełniony to na ekranie zostanie wyświetlony komunikat informujący o przyczynie niepowodzenia.
 	catch (string& exc) {
 		cout << exc << endl;
 	}

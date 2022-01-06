@@ -19,7 +19,7 @@ using namespace std;
 
 class Calculator {
 public:
-    //Tutaj przepisujemy liczby i operatory do vectora dbając o poprawność wprowadzanych danych.
+    //Przepisujemy liczby i operatory do wektora dbając o poprawność wprowadzonych danych.
     vector<string> parse(const string& input)
     {
         vector<string> vec;
@@ -113,6 +113,9 @@ public:
         
         else if (notation[1] == "^" || notation[1] == "V" || notation[1] == "%") {
             if (notation.size() == 3 && isNumber(notation[2]))
+                if(notation[1] == "V" && stod(notation[2]) <= 0)
+                    throw string("Liczba pod pierwiastkiem musi być liczba dodatnia!");
+                else
                 return calculateTwoArg(notation);
             else
                 throw string("Niepoprawna ilosc lub wartosc argumentow dla tego dzialania!");

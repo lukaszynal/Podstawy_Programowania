@@ -9,14 +9,17 @@ Sporządź krótkie sprawozdanie które będzie opisywać jak należy korzystać
 */
 
 #include <iostream>
-#include <vector>
+#include <iomanip>
+#include <math.h>
 #include <stack>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Calculator {
 public:
+    //Tutaj przepisujemy liczby i operatory do vectora.
     vector<string> parse(const string& input)
     {
         vector<string> vec;
@@ -69,6 +72,7 @@ public:
         return vec;
     }
 
+    //Sprawdzamy która funkcje wywowałać w zależności od otrzymanych danych.
     double perform(vector<string> notation)
     {
         if (notation.size() < 2)
@@ -106,7 +110,7 @@ public:
             "|| dodawanie(+), odejmowanie(-), mnozenie(*), dzielenie(/)                     ||\n"
             "|| Mozna rowniez uzywac nawiasow. Np: 2 * (10 / 2) - 2                         ||\n"
             "||                                                                             ||\n"
-            "|| Oblicza rowniez inne dzilania takie jak:                                    ||\n"
+            "|| Oblicza rowniez inne dzialania takie jak:                                   ||\n"
             "|| pierwiastek(^), potega(V), silnia(!) oraz procent(%)                        ||\n"
             "|| Jednak w tym przypadku musimy stosowac sie do kilku wytycznych:             ||\n"
             "|| Potegowanie: Podstawa potegi ^ Wykladnik potegi. Np: 3^2                    ||\n"
@@ -117,21 +121,22 @@ public:
     }
 
 private:
-    double calculateOneArg(vector<string> notation)
+    //Funkcja obslugująca działanie z jedną liczbą i jednym operatorem.
+    unsigned long long calculateOneArg(vector<string> notation)
     {
         string o = notation[1];
-        double x = stod(notation[0]);
+        int x = stoi(notation[0]);
         char oper = o[0];
 
         switch (oper)
         {
         case '!':
-            return strong(int(x));
+            return strong(x) ;
         default:
-            return 0.0;
+            return 0;
         }
     }
-
+    // Funkcja obslugująca działanie z dwiema liczbami i jednym operatorem.
     double calculateTwoArg(vector<string> notation)
     {
         string o = notation[1];
@@ -152,6 +157,7 @@ private:
         }
     }
 
+    // Funkcja rozwiązująca wyrażenie zapisane w odwrotnej notacji polskiej.
     double evalRPN(vector<string>& tokens) {
         if (tokens.empty()) {
             return 0;
@@ -187,6 +193,7 @@ private:
         return stod(s.top());
     }
 
+    // Konwersja wyrażenia infixowego znajdującego się w wektorze na zapis w postacji postfixowej.
     vector<string> convertToRPN(vector<string>& expression) {
         vector<string> output;
         infixToPostfix(expression, output);
@@ -226,6 +233,7 @@ private:
         }
     }
 
+    // Kolejność wykonywania działań.
     int precedence(string x) {
         if (x == "(") {
             return 0;
@@ -239,7 +247,8 @@ private:
         return 3;
     }
 
-    long long strong(double n)
+    // Rekurencyjna funkcja obliczająca silnię.
+    unsigned long long strong(unsigned long long n)
     {
         if (n < 2)
             return 1;
@@ -294,7 +303,7 @@ int main() {
             try {
                 vector<string> notation = c.parse(input);
                 result = c.perform(notation);
-                cout << "Wynik: " << result << endl;
+                cout << "Wynik: " << fixed << result << endl;
                 cout << "++=============================================================================++" << endl << endl;
             }
             catch (string& exc) {
@@ -303,7 +312,7 @@ int main() {
             }  
         }
         else {   
-            cout << "Jesli chcesz zakończyć, nacisnij krzyzyk. Jeśli potrzebujesz pomocy wpisz: help" << endl;
+            cout << "Jesli chcesz zakonczyc, nacisnij krzyzyk. Jesli potrzebujesz pomocy wpisz: help" << endl;
             cout << "++=============================================================================++" << endl << endl;
         }
     }   

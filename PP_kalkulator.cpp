@@ -1,4 +1,4 @@
-// Program: PP_projekt v.01, 29.12.2021
+// Program: PP_projekt v.01, 06.01.2021
 // Autor: Szynal Lukasz, 150063, 2020/2021, Informatyka, D2, II semestr
 
 /*
@@ -19,12 +19,13 @@ using namespace std;
 
 class Calculator {
 public:
-    //Tutaj przepisujemy liczby i operatory do vectora.
+    //Przepisujemy liczby i operatory do wektora dbając o poprawność wprowadzonych danych.
     vector<string> parse(const string& input)
     {
         vector<string> vec;
         string current;
-        bool lastWasDot = false, firstIsNegative = false;
+        int parenthesisOpen = 0, parenthesisClose = 0;
+        bool firstIsNegative = false, lastWasDot = false, lastWasOperator = false, lastWasParenthesis = false;
 
         if (input[0] == '-')
             firstIsNegative = true;
@@ -54,19 +55,37 @@ public:
                 else {
                     lastWasDot = false;
                 }
+                lastWasOperator = false;
             }
 
             else if (c)
             {
-                if (!current.empty())
-                {
-                    vec.emplace_back(move(current));
-                    current = "";
+                if ((lastWasOperator && c == '-') && !lastWasParenthesis)
+                    current += c;
+                else {
+                    if (lastWasOperator && c == '(' && c == ')')
+                        throw string("Operatory obok siebie sa zabronione!");
+                    if (!current.empty())
+                    {
+                        vec.emplace_back(move(current));
+                        current = "";
+                    }
+                    if (c != ' ')
+                        vec.emplace_back(1, c);
+                    lastWasOperator = true;
+                    if (c == '(')
+                        parenthesisOpen++;
+                    if (c == ')') {
+                        parenthesisClose++;
+                        lastWasParenthesis = true;
+                    } 
+                    else
+                        lastWasParenthesis = false;
                 }
-                if (c != ' ')
-                    vec.emplace_back(1, c);
             }
         }
+        if (parenthesisOpen != parenthesisClose)
+            throw string("Niezgodnosc nawiasow!");
         if (!current.empty())
             vec.push_back(move(current));
         return vec;
@@ -78,18 +97,25 @@ public:
         if (notation.size() < 2)
             throw string("Niewystarczajaca liczba danych!");
 
-        else if (!isNumber(notation[0]))
-            throw string("Pierwszy argument musi być liczba!");
+        else if (!isNumber(notation[0]) && notation[0] != "(")
+            throw string("Pierwszy argument musi byc liczba!");
         
         else if (notation[1] == "!") {
-            if (notation.size() == 2)
-                return calculateOneArg(notation);
+            if (notation.size() == 2) {
+                if (isNatural(notation[0]))
+                    return calculateOneArg(notation);
+                else
+                    throw string("Silnie obliczamy tylko dla liczb naturalych!");
+            }
             else
                 throw string("Niepoprawna ilosc lub wartosc argumentow dla tego dzialania!");
         }
         
         else if (notation[1] == "^" || notation[1] == "V" || notation[1] == "%") {
             if (notation.size() == 3 && isNumber(notation[2]))
+                if(notation[1] == "V" && stod(notation[2]) <= 0)
+                    throw string("Liczba pod pierwiastkiem musi być liczba dodatnia!");
+                else
                 return calculateTwoArg(notation);
             else
                 throw string("Niepoprawna ilosc lub wartosc argumentow dla tego dzialania!");
@@ -111,12 +137,13 @@ public:
             "|| Mozna rowniez uzywac nawiasow. Np: 2 * (10 / 2) - 2                         ||\n"
             "||                                                                             ||\n"
             "|| Oblicza rowniez inne dzialania takie jak:                                   ||\n"
-            "|| pierwiastek(^), potega(V), silnia(!) oraz procent(%)                        ||\n"
+            "|| potega(^), pierwiastek(V), silnia(!) oraz procent(%)                        ||\n"
             "|| Jednak w tym przypadku musimy stosowac sie do kilku wytycznych:             ||\n"
-            "|| Potegowanie: Podstawa potegi ^ Wykladnik potegi. Np: 3^2                    ||\n"
-            "|| Pierwiastowanie: Stopien pierwiastka V Liczba Pierwiastkowana. Np: 2V9      ||\n"
-            "|| Silnia: Liczba!. Np: 5!                                                     ||\n"
-            "|| Procent: Procent % z liczby. Np. 10%100                                     ||\n"
+            "|| * Brak mozliwosci laczenia dzialan!                                         ||\n"
+            "|| * Potegowanie: Podstawa potegi ^ Wykladnik potegi. Np: 3^2                  ||\n"
+            "|| * Pierwiastowanie: Stopien pierwiastka V Liczba Pierwiastkowana. Np: 2V9    ||\n"
+            "|| * Silnia: Liczba!. Np: 5!                                                   ||\n"
+            "|| * Procent: Procent % z liczby. Np. 10%100                                   ||\n"
             "++=============================================================================++" << endl << endl;
     }
 
@@ -270,6 +297,12 @@ private:
         return condition;
     }
 
+    bool isNatural(const string& number) {
+        double x = stod(number);
+        if ((x - int(x) == 0) && (x >= 0)) return true;
+        else return false;
+    }
+
     bool isLetter(const string& letter) {
         return letter.length() == 1 && string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWXYZ").find(letter) != string::npos;
     }
@@ -312,7 +345,7 @@ int main() {
             }  
         }
         else {   
-            cout << "Jesli chcesz zakonczyc, nacisnij krzyzyk. Jesli potrzebujesz pomocy wpisz: help" << endl;
+            cout << "Jesli chcesz zakonczyc, zamknij okno. Jesli potrzebujesz pomocy wpisz: 'help'" << endl;
             cout << "++=============================================================================++" << endl << endl;
         }
     }   

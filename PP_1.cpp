@@ -1,5 +1,12 @@
-//Program: PP_1 v.01, 16.03.2021
+//Program: PP_kalkulatorOplacalnosciLPG v.01, 16.03.2021
 //Autor: Szynal Lukasz, 150063, 2020/2021, Informatyka, D2, I semestr
+
+/*
+Stwórz kalkulator opłacalności instalacji gazowej.
+Kalkulator ma pobierać od użytkownika cene instalacji, szacowany miesięczny przebieg, koszt litra benzyny,
+koszt litra gazu, spalanie benzyny na 100km. Zaloz, ze spalanie gazu jest o 10% wieksze niz benzyny.
+Jako wynik podaj po ilu miesiącach zwróci się instalacja.
+*/
 
 #include <iostream>
 using namespace std;

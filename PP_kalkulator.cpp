@@ -321,9 +321,9 @@ int main() {
     double result = 0.0;
     Calculator c;
     cout <<
-        "++================================++\n"
-        "|| CALCULATOR CONSOLE APPLICATION ||\n"
-        "||                                ||" << endl;
+        "++=============================================================================++\n"
+        "||                       CALCULATOR CONSOLE APPLICATION                        ||\n"
+        "||                                                                             ||" << endl;
     c.help();
 
     while (true) {
@@ -332,6 +332,8 @@ int main() {
         
         if (input == "help")
             c.help();
+        if (input == "exit")
+            break;
         else if (input != "") {     
             try {
                 vector<string> notation = c.parse(input);
@@ -345,7 +347,7 @@ int main() {
             }  
         }
         else {   
-            cout << "Jesli chcesz zakonczyc, zamknij okno. Jesli potrzebujesz pomocy wpisz: 'help'" << endl;
+            cout << "Jesli chcesz zakonczyc, wpisz 'exit'. Jesli potrzebujesz pomocy wpisz: 'help'" << endl;
             cout << "++=============================================================================++" << endl << endl;
         }
     }   
